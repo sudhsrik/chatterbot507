@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- All of the meta data for the page belongs in the header tag -->
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<!-- <link rel="icon" href="./favicon.ico"> -->
+	<link rel="stylesheet" href="static/css/html5reset.css">
+	<link rel="stylesheet" href="static/css/style.css">
+	<title> Chatterbot </title>
+</head>
+<body>
+	<header>
+		<!-- <a class="skip-to-content-link" href="#main"> Skip to content </a> -->
+        <h1> Chatterbot &#129302;</h1>
+		<nav>
+			<ul>
+				<li class="active"><a href="/">Home</a></li>
+			</ul>
+		</nav>
+	</header>
+    <main>
+        <h2> What do you want to see ? </h1> 
+        <form action="/display_posts" method="POST">
+            <input type="radio" id="latest" name="category" value="latest">
+            <label for="latest"> Latest </label><br>
+            <input type="radio" id="most_liked" name="category" value="most_liked">
+            <label for="most_liked"> Most Liked </label><br>
+            <input type="radio" id="most_talked_about" name="category" value="most_talked_about">
+            <label for="most_talked_about">Most Talked About</label><br>
+            <input type="radio" id="hottest" name="category" value="hottest">
+            <label for="hottest"> Hottest </label><br>
+            
+            <label for="topx">How many tweets/posts do you want to display? (1-50): </label><br>
+            <input type="number" id="topx" name="topx" min="1" max="50" value="10"><br>
+            <input type="submit" value="Submit" />
+        </form>
+        <p>
+            {% if obj_list is not none: %}
+                <ol>
+                    <div class="tweet_post_list">
+                    {% for obj in obj_list: %}
+                        <li> 
+                            <ul>
+                                {% if obj.object_ref.type == "Tweet": %}
+                                    <br>
+                                    <li> <strong> Type : </strong>Tweet </li>
+                                    <li> <strong> ID : </strong> {{obj.object_ref.id}} </li>
+                                    <li> <strong> Time: </strong> {{obj.nodeVal[0] | ctime}} </li>
+                                    <li> <strong> Text: <strong> {{obj.object_ref.text}} </li>
+                                    <li> <strong> User: </strong> {{obj.object_ref.user['name']}} </li>
+                                    {% if obj.object_ref.coordinates is not none: %}
+                                        <li> <strong> Coordinates: </strong> {{obj.object_ref.coordinates}} </li>
+                                    {% endif %}
+                                    {% if obj.object_ref.url is not none: %}
+                                        <li> <strong> Url: </strong><a href={{obj.object_ref.url}} target="_blank"> {{obj.object_ref.url}} </a> </li>
+                                    {% endif %}
+                                    <li> <strong> Hashtags : </strong> {{obj.object_ref.hashtags}} </li>
+                                    <li> <strong> Likes: </strong> {{obj.object_ref.favorite_count}} </li>
+                                    <li> <strong> Retweeted: </strong> {{obj.object_ref.retweet_count}} </li>
+                                    <br>
+                                {% else: %}
+                                    <br>
+                                    <li> <strong> Type: </strong> Reddit Post</li>
+                                    <li> <strong> ID: </strong> {{obj.object_ref.id}}</li>
+                                    <li> <strong> Time: </strong> {{obj.nodeVal[0] | ctime}}</li>
+                                    <li> <strong> Title: </strong> {{obj.object_ref.title}} </li>
+                                    <li> <strong> Text: </strong> {{obj.object_ref.selftext}}</li>
+                                    {% if obj.object_ref.coordinates is not none: %}
+                                        <li> <strong> Coordinates </strong> {{obj.object_ref.coordinates}}</li>
+                                    {% endif %}
+                                    {% if obj.object_ref.url is not none: %}
+                                        <li> <strong> Url: </strong> <a href={{obj.object_ref.url}} target="_blank"> {{obj.object_ref.url}} </a> </li>
+                                    {% endif %}
+                                    <li> <strong> Subreddit: </strong> {{obj.object_ref.subreddit}} </li>
+                                    <li> <strong> Upvotes: </strong>  {{obj.object_ref.ups}} </li>
+                                    <li> <strong> Downvotes: </strong> {{obj.object_ref.downs}} </li>
+                                    <li> <strong> Comments: </strong> {{obj.object_ref.num_comments}} </li>
+                                    <br>
+                                {% endif %}     
+                            </ul>
+                        </li>
+                    {% endfor %}
+                    </div>
+                </ol>
+            {% endif %}
+        </p>
+
+
+
+    </main>
+</body>
+
